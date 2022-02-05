@@ -2,11 +2,11 @@ version: '3'
 
 services:
     frontend:
-      build: ./frontend
+      build: 
+        context: ./frontend
+        dockerfile: Dockerfile.prod
       container_name: docker-udemy-frontend
       command: serve -s build -l 3000
-      ports:
-        - "3000:3000"
       restart: unless-stopped
       networks:
         - docker-udemy-network
@@ -16,8 +16,6 @@ services:
       container_name: docker-udemy-api
       command: npm run start
       restart: unless-stopped
-      ports:
-        - "3001:3001"
       environment:
         - PORT=3001
         - MONGO_URL=mongodb://api_db:27017/api
@@ -32,8 +30,6 @@ services:
       container_name: docker-udemy-auth
       command: npm run start
       restart: unless-stopped
-      ports:
-        - "3002:3002"
       environment:
         - PORT=3002
         - MONGO_URL=mongodb://auth_db:27017/auth
@@ -68,6 +64,8 @@ services:
         - ./nginx/nginx.prod.conf:/etc/nginx/conf.d/nginx.conf
       depends_on:
         - frontend
+        - api
+        - auth
       networks:
         - docker-udemy-network
 
